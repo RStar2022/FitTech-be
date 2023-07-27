@@ -9,7 +9,7 @@ class Profile(db.Model):
     gender = db.Column(db.String(64), nullable=True)
     hobby = db.Column(db.String(64))
     desc = db.Column(db.String(256))
-    #added_by = db.relationship('user', backref = "profile")
+    added_by = db.relationship('user', backref = "profile")
 
     def __init__(self, name, age, gender, hobby, desc):
         self.name = name
@@ -28,6 +28,8 @@ class Profile(db.Model):
         }
 
 class User(db.Model):
+    __tablename__ = "user"
+    id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=True)
     password = db.Column(db.String(64), unique=True, nullable=True)
 
