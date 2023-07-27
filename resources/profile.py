@@ -1,5 +1,6 @@
 from flask import request, jsonify, Response
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from database.models import Profile, User
 from database.db import db
 
@@ -8,7 +9,10 @@ class ProfileApi(Resource):
         get_profile = Profile.query.to_json()
         return Response(get_profile, mimetype="application/json", status=200)
     
+    @jwt_required
     def post(self):
+        user_id = get_jwt_identity()
+        user = User.query.filter_by(id=user_id)
         body = request.get_json()
         req_name = body["name"]
         req_age = body["age"]
@@ -17,7 +21,7 @@ class ProfileApi(Resource):
         req_desc = body["desc"]
         data = Profile(name=req_name, age=req_age,
                        gender= req_gender, hobby = req_hobby,
-                       desc=req_desc)
+                       desc=req_desc, added_by=user)
         db.session.add(data)
         db.session.commit()
 
@@ -27,11 +31,14 @@ class ProfileApi(Resource):
 class ProfilesApi(Resource):
     def get(self, id):
         profile_info = Profile.query.filter_by(id=id).first()
-        if not profile_info :
+        if not profile_info:
             return "Not Found", 404
         return jsonify(profile_info.to_json())
     
+    @jwt_required
     def put(self, id):
+        user_id = get_jwt_identity()
+        user = User.query.filter_by(id = user_id).first()
         profile = Profile.query.filter_by(id=id).first()
         body = request.get_json()
 
