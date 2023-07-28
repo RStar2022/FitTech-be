@@ -10,14 +10,14 @@ class SignupApi(Resource):
         body = request.get_json()
         req_email = body["email"]
         req_password = body["password"]
-
-        data = User(email=req_email, password=req_password)
-        data.hash_password()
-        db.session.add(data)
-        db.session.commit()
-        
-        id = data.id
-        return {'id':str(id)}
+        req_password2 = body["password2"]
+        if req_password == req_password2 :
+            data = User(email=req_email, password=req_password)
+            data.hash_password()
+            db.session.add(data)
+            db.session.commit()
+            id = data.id
+            return {'id':str(id)}
 
 class LoginApi(Resource):
     def post(self):
