@@ -9,14 +9,15 @@ class Profile(db.Model):
     gender = db.Column(db.String(64), nullable=True)
     hobby = db.Column(db.String(64))
     desc = db.Column(db.String(256))
-    added_by = db.relationship('User', backref = "profile")
+    added_by = db.relationship('User', backref = "profile", lazy = True)
 
-    def __init__(self, name, age, gender, hobby, desc):
+    def __init__(self, name, age, gender, hobby, desc, added_by):
         self.name = name
         self.age = age
         self.gender = gender
         self.hobby = hobby
         self.desc = desc
+        self.added_by = added_by
 
     def to_json(self):
         return {
@@ -24,7 +25,7 @@ class Profile(db.Model):
             "age" :self.age,
             "gender" :self.gender,
             "hobby" : self.hobby,
-            "desc" : self.desc
+            "desc" : self.desc,
         }
 
 class User(db.Model):
