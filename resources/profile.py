@@ -29,8 +29,10 @@ class ProfileApi(Resource):
         return {'id':str(id)}, 200
     
 class ProfilesApi(Resource):
+    @jwt_required
     def get(self, id):
-        profile_info = Profile.query.filter_by(id=id).first()
+        user_id = get_jwt_identity()
+        profile_info = Profile.query.filter_by(id=user_id).first()
         if not profile_info:
             return "Not Found", 404
         return jsonify(profile_info.to_json())
@@ -38,8 +40,7 @@ class ProfilesApi(Resource):
     @jwt_required
     def put(self, id):
         user_id = get_jwt_identity()
-        user = User.query.filter_by(id = user_id).first()
-        profile = Profile.query.filter_by(id=id).first()
+        profile = Profile.query.filter_by(id=id, added_by=user_id).first()
         body = request.get_json()
 
         profile.name = body["name"]

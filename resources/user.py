@@ -15,6 +15,7 @@ class SignupApi(Resource):
         data.hash_password()
         db.session.add(data)
         db.session.commit()
+        
         id = data.id
         return {'id':str(id)}
 

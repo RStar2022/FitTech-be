@@ -17,7 +17,7 @@ with app.app_context():
     try:
        db.create_all()
     except Exception as ex :
-        print("Got wrond create all"+str(ex))      
+        print("Got wrong create all"+str(ex))      
 
 api = Api(app)
 api.add_resource(SignupApi, '/signup')
